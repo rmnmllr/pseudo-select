@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klassenverteilung</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 100px);
+            grid-template-rows: repeat(5, 100px);
+            gap: 10px;
+        }
+
+        .field {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            color: white;
+            width: 100px;
+            height: 100px;
+            background-color: #2d572c;
+            /* Base color for all fields */
+            border: 1px solid #333;
+            border-radius: 10px;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .blink {
+            opacity: 0.5;
+        }
+
+        .selected {
+            background-color: #ff007f;
+            /* Highlight selected fields */
+            opacity: 1;
+            /* Ensure selected fields are fully opaque */
+        }
+
+        .deselected {
+            background-color: #2d572c;
+            /* Reset other fields to base color */
+            opacity: 1;
+        }
+
+        button {
+            margin-bottom: 40px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        .message {
+            font-size: 18px;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Partnerklassen Schule untere Emme</h1>
+    <button id="startButton">Start</button>
+    <div class="grid" id="grid"></div>
+    <div class="message" id="message"></div>
+
+    <!-- <audio id="blinkSound" loop></audio>
+        <source src="static/sparkling.mp3" type="audio/mpeg">
+        <source src="https://muellerr.web.cern.ch/blink/sparkling.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+    </audio> -->
+
+    <script>
+        // Initialize the grid
+        const gridElement = document.getElementById('grid');
+        const startButton = document.getElementById('startButton');
+        const messageElement = document.getElementById('message');
+        // const blinkSound = document.getElementById('blinkSound'); // Audio element
+
+        // Custom strings to display in the fields
+        const fieldStrings = [
+            '3a', '1/2b', 'KG B3', 'KG B1',
+            '7a', '5/6b', '3/4b', 'KG B4',
+            '7b', '1a', '9a', '6a',
+            '5a', '2a', '9b', 'EK und LI',
+            'KG B2', '8b', '4a', '8a'];
+
+
+        const totalFields = fieldStrings.length;  // 24 fields in total based on the array
+        let pairs = [[3, 19], [16, 10], [2, 14], [7, 17], [15, 5], [9, 8], [13, 11], [1, 4], [0, 12], [6, 18]]; // predefined pairs (0-indexed)
+        let selectedPairs = [];
+
+        // Function to create fields with strings
+        function createFields() {
+            for (let i = 0; i < totalFields; i++) {
+                const field = document.createElement('div');
+                field.className = 'field';
+                field.dataset.index = i; // Store index in dataset
+                field.textContent = fieldStrings[i]; // Display strings from fieldStrings array
+                gridElement.appendChild(field);
+            }
+        }
+
+        // Function to make fields blink
+        function blinkFields() {
+            const fields = document.querySelectorAll('.field');
+            fields.forEach(field => {
+                if (!field.classList.contains('selected')) {
+                    field.classList.toggle('blink', Math.random() < 0.5);
+                }
+            });
+        }
+
+        // Function to stop blinking and highlight only the selected pair
+        function stopBlinking() {
+            const fields = document.querySelectorAll('.field');
+
+            // Select one random pair from remaining pairs
+            if (pairs.length > 0) {
+                const randomIndex = Math.floor(Math.random() * pairs.length);
+                const selectedPair = pairs[randomIndex];
+
+                // Remove blink class from all fields and set them to deselected
+                fields.forEach(field => {
+                    // field.classList.add('deselected'); // All fields reset to base color
+                    field.classList.add('blink');
+                });
+
+                // Highlight only the selected pair
+                const field1 = fields[selectedPair[0]];
+                const field2 = fields[selectedPair[1]];
+                field1.classList.remove('deselected');
+                field1.classList.add('selected');
+                field2.classList.remove('deselected');
+                field2.classList.add('selected');
+
+                // Deactivate selected pair from further selection
+                pairs.splice(randomIndex, 1);
+            }
+
+            // Check if all pairs have been selected
+            if (pairs.length === 0) {
+                messageElement.textContent = "Alle Klassen verteilt!";
+                startButton.disabled = true; // Disable start button
+            }
+        }
+
+        // Start the blinking process
+        function startBlinking() {
+            // Clear any previous messages
+            messageElement.textContent = "";
+
+            // Reset the grid and create fields again
+            gridElement.innerHTML = '';
+            createFields();
+
+            // blinkSound.play();
+
+            // Reset the blinking fields
+            const blinkingInterval = setInterval(blinkFields, 200); // Blink every 300ms for faster effect
+
+            // Stop blinking after 5 seconds
+            setTimeout(() => {
+                clearInterval(blinkingInterval);
+                stopBlinking();
+
+                // blinkSound.pause();
+                // blinkSound.currentTime = 0; // Reset the audio playback position
+
+            }, 5000); // Stop after 5 seconds
+        }
+
+        // Start the blinking process on button click
+        startButton.onclick = startBlinking;
+
+        window.onload = createFields;
+    </script>
+
+</body>
+
+</html>
