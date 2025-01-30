@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klassenverteilung</title>
+    <title>Your pair matching</title>
     <style>
         body {
             display: flex;
@@ -80,16 +80,10 @@
 </head>
 
 <body>
-    <h1>Partnerklassen Schule untere Emme</h1>
+    <h1>your pair selection</h1>
     <button id="startButton">Start</button>
     <div class="grid" id="grid"></div>
     <div class="message" id="message"></div>
-
-    <!-- <audio id="blinkSound" loop></audio>
-        <source src="static/sparkling.mp3" type="audio/mpeg">
-        <source src="https://muellerr.web.cern.ch/blink/sparkling.ogg" type="audio/ogg">
-        Your browser does not support the audio element.
-    </audio> -->
 
     <script>
         // Initialize the grid
@@ -161,7 +155,7 @@
 
             // Check if all pairs have been selected
             if (pairs.length === 0) {
-                messageElement.textContent = "Alle Klassen verteilt!";
+                messageElement.textContent = "All pairs matched!";
                 startButton.disabled = true; // Disable start button
             }
         }
@@ -175,18 +169,13 @@
             gridElement.innerHTML = '';
             createFields();
 
-            // blinkSound.play();
-
             // Reset the blinking fields
-            const blinkingInterval = setInterval(blinkFields, 200); // Blink every 300ms for faster effect
+            const blinkingInterval = setInterval(blinkFields, 200); // Blink every 200ms for faster effect
 
             // Stop blinking after 5 seconds
             setTimeout(() => {
                 clearInterval(blinkingInterval);
                 stopBlinking();
-
-                // blinkSound.pause();
-                // blinkSound.currentTime = 0; // Reset the audio playback position
 
             }, 5000); // Stop after 5 seconds
         }
